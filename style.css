@@ -119,6 +119,12 @@ border:2px dashed #334155;
 border-radius:10px;
 text-align:center;
 opacity:.7;
+transition:0.2s;
+}
+
+#dropZone.drag{
+opacity:1;
+border-color:#22c55e;
 }
 
 /* Torrent item */
@@ -159,32 +165,4 @@ gap:8px;
 background:#334155;
 padding:6px 10px;
 font-size:12px;
-}
-
-video{
-width:100%;
-margin-top:10px;
-border-radius:10px;
-}
-
-/* Player */
-
-#playerModal{
-position:fixed;
-inset:0;
-background:#000a;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.hidden{
-display:none;
-}
-
-.player{
-background:#020617;
-padding:20px;
-border-radius:10px;
-width:70%;
 }
