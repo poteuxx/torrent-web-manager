@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Torrent Web Manager</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+
+<script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+<div class="logo">TorrentUI</div>
+
+<nav>
+<button class="nav active">Dashboard</button>
+<button class="nav">Active</button>
+<button class="nav">Finished</button>
+<button class="nav">Player</button>
+</nav>
+
+<div class="sidebarStats">
+<div>Download <span id="downSpeed">0</span></div>
+<div>Upload <span id="upSpeed">0</span></div>
+<div>Torrents <span id="torrentCount">0</span></div>
+</div>
+
+</aside>
+
+<main class="main">
+
+<header>
+
+<div class="controls">
+
+<input id="magnetInput" placeholder="Paste magnet link">
+
+<button id="addBtn">Add</button>
+
+<label class="uploadBtn">
+<input type="file" id="torrentFile">
+Upload
+</label>
+
+</div>
+
+</header>
+
+<section id="dropZone">
+Drop magnet or torrent file here
+</section>
+
+<section id="torrentList"></section>
+
+</main>
+
+</div>
+
+<div id="playerModal" class="hidden">
+<div class="player">
+<video id="videoPlayer" controls></video>
+<button id="closePlayer">Close</button>
+</div>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
