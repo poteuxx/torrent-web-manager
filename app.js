@@ -15,9 +15,6 @@ const downSpeed = document.getElementById("downSpeed")
 const upSpeed = document.getElementById("upSpeed")
 const torrentCount = document.getElementById("torrentCount")
 
-const playerModal = document.getElementById("playerModal")
-const videoPlayer = document.getElementById("videoPlayer")
-
 let saved = JSON.parse(localStorage.getItem("torrents") || "[]")
 
 saved.forEach(addTorrent)
@@ -48,15 +45,16 @@ const drop = document.getElementById("dropZone")
 
 drop.ondragover = e=>{
 e.preventDefault()
-drop.style.opacity=1
+drop.classList.add("drag")
 }
 
 drop.ondragleave = ()=>{
-drop.style.opacity=.7
+drop.classList.remove("drag")
 }
 
 drop.ondrop = e=>{
 e.preventDefault()
+drop.classList.remove("drag")
 
 const file = e.dataTransfer.files[0]
 
@@ -71,10 +69,8 @@ addTorrent(magnet)
 /* Save magnets */
 
 function saveMagnet(m){
-
 saved.push(m)
 localStorage.setItem("torrents",JSON.stringify(saved))
-
 }
 
 /* Torrent */
@@ -100,12 +96,8 @@ el.innerHTML=`
 <div class="controlsRow">
 <button class="small pause">Pause</button>
 <button class="small resume">Resume</button>
-<button class="small stream">Stream</button>
 <button class="small remove">Remove</button>
 </div>
-
-<div class="media"></div>
-
 `
 
 list.appendChild(el)
@@ -125,26 +117,12 @@ setInterval(()=>{
 bar.style.width = (torrent.progress*100)+"%"
 
 stats.innerText =
-(torrent.progress*100).toFixed(1)+"% | "+
+(torrent.progress*100).toFixed(1)+"% | " +
 format(torrent.downloadSpeed)+"/s"
 
 peers.innerText = torrent.numPeers+" peers"
 
 },500)
-
-/* Stream */
-
-el.querySelector(".stream").onclick=()=>{
-
-const file = torrent.files.find(f=>f.name.match(/\.(mp4|mkv|webm)/))
-
-if(!file) return
-
-file.renderTo(videoPlayer)
-
-playerModal.classList.remove("hidden")
-
-}
 
 /* Pause */
 
@@ -163,13 +141,6 @@ el.remove()
 
 })
 
-}
-
-/* Player */
-
-document.getElementById("closePlayer").onclick=()=>{
-playerModal.classList.add("hidden")
-videoPlayer.pause()
 }
 
 /* Global stats */
