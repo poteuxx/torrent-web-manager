@@ -14,7 +14,7 @@ display:flex;
 height:100vh;
 }
 
-/* Sidebar */
+/* sidebar */
 
 .sidebar{
 width:240px;
@@ -22,86 +22,20 @@ background:#020617;
 padding:20px;
 display:flex;
 flex-direction:column;
-}
-
-.logo{
-font-size:22px;
-font-weight:700;
-margin-bottom:25px;
-}
-
-nav{
-display:flex;
-flex-direction:column;
-gap:6px;
-}
-
-.nav{
-background:none;
-border:none;
-color:white;
-padding:10px;
-text-align:left;
-border-radius:8px;
-cursor:pointer;
-}
-
-.nav:hover{
-background:#1e293b;
-}
-
-.active{
-background:#1e293b;
-}
-
-.sidebarStats{
-margin-top:auto;
-font-size:13px;
-opacity:.8;
-display:flex;
-flex-direction:column;
-gap:5px;
-}
-
-/* Main */
-
-.main{
-flex:1;
-display:flex;
-flex-direction:column;
-}
-
-header{
-padding:15px;
-background:#020617;
-border-bottom:1px solid #1e293b;
-}
-
-.controls{
-display:flex;
 gap:10px;
 }
 
-input{
-flex:1;
-padding:10px;
-border-radius:8px;
-border:none;
-background:#1e293b;
-color:white;
+.logo{
+font-size:20px;
+font-weight:bold;
+margin-bottom:10px;
 }
 
-button{
-border:none;
-background:#22c55e;
-padding:10px 16px;
-border-radius:8px;
-cursor:pointer;
-}
-
+.sidebar button,
 .uploadBtn{
-background:#334155;
-padding:10px 16px;
+background:#22c55e;
+border:none;
+padding:10px;
 border-radius:8px;
 cursor:pointer;
 }
@@ -110,43 +44,69 @@ cursor:pointer;
 display:none;
 }
 
-/* Drop zone */
+.stats{
+margin-top:auto;
+font-size:13px;
+opacity:.8;
+}
+
+/* main */
+
+main{
+flex:1;
+display:flex;
+flex-direction:column;
+}
+
+header{
+background:#020617;
+padding:10px;
+display:flex;
+gap:10px;
+}
+
+header input{
+flex:1;
+padding:10px;
+border-radius:8px;
+border:none;
+background:#1e293b;
+color:white;
+}
+
+header button{
+padding:10px 16px;
+background:#22c55e;
+border:none;
+border-radius:8px;
+}
 
 #dropZone{
-margin:15px;
+margin:10px;
 padding:20px;
 border:2px dashed #334155;
 border-radius:10px;
 text-align:center;
-opacity:.7;
-transition:0.2s;
 }
-
-#dropZone.drag{
-opacity:1;
-border-color:#22c55e;
-}
-
-/* Torrent item */
 
 .torrent{
 background:#020617;
-margin:10px 15px;
+margin:10px;
 padding:15px;
 border-radius:10px;
 }
 
-.torrentTop{
+.top{
 display:flex;
 justify-content:space-between;
 }
 
-.progress{
-height:8px;
+.progressWrap{
 background:#1e293b;
+height:8px;
 border-radius:10px;
-margin-top:8px;
 overflow:hidden;
+margin-top:6px;
 }
 
 .bar{
@@ -155,14 +115,37 @@ background:#22c55e;
 width:0%;
 }
 
-.controlsRow{
+.files{
 margin-top:10px;
 display:flex;
-gap:8px;
+flex-wrap:wrap;
+gap:6px;
+}
+
+.fileBtn{
+background:#334155;
+border:none;
+padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
+font-size:12px;
+}
+
+.controls{
+margin-top:10px;
+display:flex;
+gap:6px;
 }
 
 .small{
 background:#334155;
+border:none;
 padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
 font-size:12px;
 }
+
+.health-good{color:#22c55e}
+.health-ok{color:#facc15}
+.health-bad{color:#ef4444}
