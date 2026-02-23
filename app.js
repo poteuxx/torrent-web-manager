@@ -1,18 +1,10 @@
-const client = new WebTorrent({
-tracker:{
-announce:[
-"wss://tracker.openwebtorrent.com",
-"wss://tracker.btorrent.xyz",
-"wss://tracker.webtorrent.dev"
-]
-}
-})
+const client = new WebTorrent()
 
 const list = document.getElementById("torrentList")
 const magnetInput = document.getElementById("magnetInput")
 
 const downSpeed = document.getElementById("downSpeed")
-const upSpeed = document.getElementById("upSpeed")
+const peerCount = document.getElementById("peerCount")
 const torrentCount = document.getElementById("torrentCount")
 
 let saved = JSON.parse(localStorage.getItem("torrents") || "[]")
@@ -21,21 +13,22 @@ saved.forEach(addTorrent)
 
 /* Add magnet */
 
-document.getElementById("addBtn").onclick = ()=>{
+document.getElementById("addBtn").onclick = () => {
 
 const magnet = magnetInput.value.trim()
 
 if(!magnet) return
 
-saveMagnet(magnet)
+save(magnet)
 addTorrent(magnet)
 
 magnetInput.value=""
+
 }
 
 /* Upload */
 
-document.getElementById("torrentFile").addEventListener("change",e=>{
+document.getElementById("torrentFile").addEventListener("change", e=>{
 addTorrent(e.target.files[0])
 })
 
@@ -43,34 +36,23 @@ addTorrent(e.target.files[0])
 
 const drop = document.getElementById("dropZone")
 
-drop.ondragover = e=>{
-e.preventDefault()
-drop.classList.add("drag")
-}
-
-drop.ondragleave = ()=>{
-drop.classList.remove("drag")
-}
+drop.ondragover = e=>e.preventDefault()
 
 drop.ondrop = e=>{
 e.preventDefault()
-drop.classList.remove("drag")
 
 const file = e.dataTransfer.files[0]
 
-if(file){
-addTorrent(file)
-}else{
-const magnet = e.dataTransfer.getData("text")
-addTorrent(magnet)
-}
+if(file) addTorrent(file)
 }
 
-/* Save magnets */
+/* Save */
 
-function saveMagnet(m){
+function save(m){
+
 saved.push(m)
 localStorage.setItem("torrents",JSON.stringify(saved))
+
 }
 
 /* Torrent */
@@ -82,57 +64,84 @@ el.className="torrent"
 
 el.innerHTML=`
 
-<div class="torrentTop">
+<div class="top">
 <div class="title">Loading...</div>
-<div class="peers"></div>
+<div class="health"></div>
 </div>
 
-<div class="progress">
+<div class="progressWrap">
 <div class="bar"></div>
 </div>
 
 <div class="stats"></div>
 
-<div class="controlsRow">
+<div class="controls">
 <button class="small pause">Pause</button>
 <button class="small resume">Resume</button>
 <button class="small remove">Remove</button>
 </div>
+
+<div class="files"></div>
+
 `
 
 list.appendChild(el)
 
 const title = el.querySelector(".title")
-const peers = el.querySelector(".peers")
+const health = el.querySelector(".health")
 const bar = el.querySelector(".bar")
 const stats = el.querySelector(".stats")
+const filesDiv = el.querySelector(".files")
 
-client.add(source,torrent=>{
+client.add(source, torrent => {
 
-title.innerText = torrent.name
-torrentCount.innerText = client.torrents.length
+title.textContent = torrent.name
+torrentCount.textContent = client.torrents.length
 
-setInterval(()=>{
+/* files */
+
+torrent.files.forEach(file=>{
+
+const btn = document.createElement("button")
+btn.className="fileBtn"
+btn.textContent=file.name
+
+btn.onclick=()=>{
+
+file.getBlobURL((err,url)=>{
+const a=document.createElement("a")
+a.href=url
+a.download=file.name
+a.click()
+})
+
+}
+
+filesDiv.appendChild(btn)
+
+})
+
+/* progress */
+
+const interval = setInterval(()=>{
 
 bar.style.width = (torrent.progress*100)+"%"
 
-stats.innerText =
-(torrent.progress*100).toFixed(1)+"% | " +
-format(torrent.downloadSpeed)+"/s"
+stats.textContent =
+(torrent.progress*100).toFixed(1)+"% | "+
+format(torrent.downloadSpeed)+"/s | "+
+torrent.numPeers+" peers"
 
-peers.innerText = torrent.numPeers+" peers"
+updateHealth(torrent,health)
+
+if(torrent.progress===1) clearInterval(interval)
 
 },500)
 
-/* Pause */
+/* controls */
 
 el.querySelector(".pause").onclick=()=>torrent.pause()
-
-/* Resume */
-
 el.querySelector(".resume").onclick=()=>torrent.resume()
-
-/* Remove */
 
 el.querySelector(".remove").onclick=()=>{
 torrent.destroy()
@@ -143,20 +152,39 @@ el.remove()
 
 }
 
-/* Global stats */
+/* health */
+
+function updateHealth(torrent,el){
+
+if(torrent.numPeers>10){
+el.textContent="Healthy"
+el.className="health-good"
+}
+else if(torrent.numPeers>2){
+el.textContent="Medium"
+el.className="health-ok"
+}
+else{
+el.textContent="Low"
+el.className="health-bad"
+}
+
+}
+
+/* global stats */
 
 setInterval(()=>{
 
 let down=0
-let up=0
+let peers=0
 
 client.torrents.forEach(t=>{
 down+=t.downloadSpeed
-up+=t.uploadSpeed
+peers+=t.numPeers
 })
 
-downSpeed.innerText=format(down)+"/s"
-upSpeed.innerText=format(up)+"/s"
+downSpeed.textContent=format(down)+"/s"
+peerCount.textContent=peers
 
 },1000)
 
